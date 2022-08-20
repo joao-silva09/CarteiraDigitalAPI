@@ -1,4 +1,5 @@
 ﻿using CarteiraDigitalAPI.Dtos.Conta;
+using CarteiraDigitalAPI.Dtos.Divida;
 
 namespace CarteiraDigitalAPI.Dtos.Usuario
 {
@@ -11,7 +12,7 @@ namespace CarteiraDigitalAPI.Dtos.Usuario
         public byte[] PasswordSalt { get; set; }
         public List<Objetivo> Objetivos { get; set; }
         public List<GetContaDto> Contas { get; set; }
-        public List<Divida> Dividas { get; set; }
+        public List<GetDividaDto> Dividas { get; set; }
         public List<Operacao> Operacoes { get; set; }
     }
 }

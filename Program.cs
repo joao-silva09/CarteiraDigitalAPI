@@ -2,6 +2,7 @@ global using CarteiraDigitalAPI.Models;
 using CarteiraDigitalAPI.Data;
 using CarteiraDigitalAPI.Services.CategoriaService;
 using CarteiraDigitalAPI.Services.ContaService;
+using CarteiraDigitalAPI.Services.DividaService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -35,6 +36,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IContaService, ContaService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IDividaService, DividaService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
     {

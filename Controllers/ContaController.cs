@@ -17,25 +17,25 @@ namespace CarteiraDigitalAPI.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<GetContaDto>>>> GetContas()
+        public async Task<ActionResult<ServiceResponse<List<GetContaDto>>>> GetAll()
         {
             return Ok(await _contaService.GetAllContas());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<GetContaDto>>> GetConta(int id)
+        public async Task<ActionResult<ServiceResponse<GetContaDto>>> GetById(int id)
         {
             return Ok(await _contaService.GetContaById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<List<GetContaDto>>>> AddConta(AddContaDto newConta)
+        public async Task<ActionResult<ServiceResponse<List<GetContaDto>>>> Add(AddContaDto newConta)
         {
             return Ok(await _contaService.AddConta(newConta));
         }
 
         [HttpPut]
-        public async Task<ActionResult<ServiceResponse<GetContaDto>>> UpdateCharacter(UpdateContaDto updatedConta)
+        public async Task<ActionResult<ServiceResponse<GetContaDto>>> Update(UpdateContaDto updatedConta)
         {
             var response = await _contaService.UpdateConta(updatedConta);
             if (response.Data == null)
@@ -55,11 +55,5 @@ namespace CarteiraDigitalAPI.Controllers
             }
             return Ok(response);
         }
-
-        //[HttpPost("Skill")]
-        //public async Task<ActionResult<ServiceResponse<GetContaDto>>> AddCharacterSkill(AddCharacterSkillDto newCharacterSkill)
-        //{
-        //    return Ok(await _contaService.AddConta(newCharacterSkill));
-        //}
     }
 }

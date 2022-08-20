@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CarteiraDigitalAPI.Dtos.Conta;
+using CarteiraDigitalAPI.Dtos.Divida;
 
 namespace CarteiraDigitalAPI
 {
@@ -9,6 +10,9 @@ namespace CarteiraDigitalAPI
         {
             CreateMap<Conta, GetContaDto>();
             CreateMap<AddContaDto, Conta>();
+            
+            CreateMap<Divida, GetDividaDto>();
+            CreateMap<AddDividaDto, Divida>();
         }
     }
 }
