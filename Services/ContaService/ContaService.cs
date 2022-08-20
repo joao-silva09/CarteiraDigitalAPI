@@ -43,7 +43,31 @@ namespace CarteiraDigitalAPI.Services.ContaService
 
         public async Task<ServiceResponse<List<GetContaDto>>> DeleteConta(int contaId)
         {
-            throw new NotImplementedException();
+            ServiceResponse<List<GetContaDto>> response = new ServiceResponse<List<GetContaDto>>();
+            try
+            {
+                Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+                if (conta != null)
+                {
+                    _context.Contas.Remove(conta);
+                    await _context.SaveChangesAsync();
+                    response.Data = _context.Contas
+                        .Where(c => c.Usuario.Id == GetUserId())
+                        .Select(c => _mapper.Map<GetContaDto>(c))
+                        .ToList();
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Conta não encontrada";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<List<GetContaDto>>> GetAllContas()
@@ -58,12 +82,46 @@ namespace CarteiraDigitalAPI.Services.ContaService
 
         public async Task<ServiceResponse<GetContaDto>> GetContaById(int contaId)
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServiceResponse<GetContaDto>();
+            var dbConta = await _context.Contas
+                .Where(c => c.Usuario.Id == GetUserId())
+                .FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+            serviceResponse.Data = _mapper.Map<GetContaDto>(dbConta);
+            return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetContaDto>> UpdateConta(AddContaDto newConta)
+        public async Task<ServiceResponse<GetContaDto>> UpdateConta(UpdateContaDto updatedConta)
         {
-            throw new NotImplementedException();
+            ServiceResponse<GetContaDto> response = new ServiceResponse<GetContaDto>();
+            try
+            {
+                var conta = await _context.Contas
+                    .Include(c => c.Usuario)
+                    .FirstOrDefaultAsync(c => c.Id == updatedConta.Id);
+
+                if (conta.Usuario.Id == GetUserId())
+                {
+                    conta.Titulo = updatedConta.Titulo;
+                    conta.Banco = updatedConta.Banco;
+                    conta.Saldo = updatedConta.Saldo;
+
+                    await _context.SaveChangesAsync();
+
+                    response.Data = _mapper.Map<GetContaDto>(conta);
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Conta não encontrada";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
     }
 }

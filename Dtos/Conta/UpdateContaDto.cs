@@ -2,7 +2,7 @@
 
 namespace CarteiraDigitalAPI.Dtos.Conta
 {
-    public class GetContaDto
+    public class UpdateContaDto
     {
         public int Id { get; set; }
         public string Titulo { get; set; }

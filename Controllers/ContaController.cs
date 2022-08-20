@@ -8,10 +8,10 @@ namespace CarteiraDigitalAPI.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class CharacterController : ControllerBase
+    public class ContaController : ControllerBase
     {
         private readonly IContaService _contaService;
-        public CharacterController(IContaService contaService)
+        public ContaController(IContaService contaService)
         {
             _contaService = contaService;
         }
@@ -34,16 +34,16 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(await _contaService.AddConta(newConta));
         }
 
-        //[HttpPut]
-        //public async Task<ActionResult<ServiceResponse<GetContaDto>>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
-        //{
-        //    var response = await _contaService.UpdateConta(updatedCharacter);
-        //    if (response.Data == null)
-        //    {
-        //        return NotFound(response);
-        //    }
-        //    return Ok(response);
-        //}
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<GetContaDto>>> UpdateCharacter(UpdateContaDto updatedConta)
+        {
+            var response = await _contaService.UpdateConta(updatedConta);
+            if (response.Data == null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<GetContaDto>>>> Delete(int id)
