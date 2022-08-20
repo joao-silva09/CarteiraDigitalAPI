@@ -8,15 +8,20 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Dtos\Categoria\" />
     <Folder Include="Dtos\Divida\" />
-    <Folder Include="Dtos\Conta\" />
-    <Folder Include="Dtos\Usuario\" />
     <Folder Include="Dtos\Objetivo\" />
     <Folder Include="Dtos\Operacao\" />
   </ItemGroup>

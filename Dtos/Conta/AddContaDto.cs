@@ -1,11 +1,10 @@
-﻿namespace CarteiraDigitalAPI.Models
+﻿namespace CarteiraDigitalAPI.Dtos.Conta
 {
-    public class Conta
+    public class AddContaDto
     {
-        public int Id { get; set; }
         public string Titulo { get; set; }
         public decimal Saldo { get; set; }
         public string Banco { get; set; }
-        public Usuario Usuario { get; set; }
+        public int UsuarioId { get; set; }
     }
 }
