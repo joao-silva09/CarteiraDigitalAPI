@@ -48,7 +48,12 @@ namespace CarteiraDigitalAPI.Services.ContaService
 
         public async Task<ServiceResponse<List<GetContaDto>>> GetAllContas()
         {
-            throw new NotImplementedException();
+            var response = new ServiceResponse<List<GetContaDto>>();
+            var dbCharacters = await _context.Contas
+                .Where(c => c.Usuario.Id == GetUserId())
+                .ToListAsync();
+            response.Data = dbCharacters.Select(c => _mapper.Map<GetContaDto>(c)).ToList();
+            return response;
         }
 
         public async Task<ServiceResponse<GetContaDto>> GetContaById(int contaId)

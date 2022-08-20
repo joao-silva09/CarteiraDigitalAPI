@@ -1,4 +1,6 @@
-﻿namespace CarteiraDigitalAPI.Models
+﻿using CarteiraDigitalAPI.Dtos.Usuario;
+
+namespace CarteiraDigitalAPI.Models
 {
     public class Conta
     {
