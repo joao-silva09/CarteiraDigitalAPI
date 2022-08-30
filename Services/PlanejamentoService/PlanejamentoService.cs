@@ -52,7 +52,7 @@ namespace CarteiraDigitalAPI.Services.PlanejamentoService
                 {
                     _context.Planejamentos.Remove(planejamento);
                     await _context.SaveChangesAsync();
-                    response.Data = _context.Planejament
+                    response.Data = _context.Planejamentos
                         .Where(c => c.Usuario.Id == GetUserId())
                         .Select(c => _mapper.Map<GetPlanejamentoDto>(c))
                         .ToList();

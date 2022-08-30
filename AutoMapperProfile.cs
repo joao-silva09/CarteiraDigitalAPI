@@ -2,6 +2,7 @@
 using CarteiraDigitalAPI.Dtos.Conta;
 using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Dtos.Objetivo;
+using CarteiraDigitalAPI.Dtos.Planejamento;
 
 namespace CarteiraDigitalAPI
 {
@@ -17,6 +18,9 @@ namespace CarteiraDigitalAPI
             
             CreateMap<Objetivo, GetObjetivoDto>();
             CreateMap<AddObjetivoDto, Objetivo>();
+
+            CreateMap<Planejamento, GetPlanejamentoDto>();
+            CreateMap<AddPlanejamentoDto, Planejamento>();
         }
     }
 }
