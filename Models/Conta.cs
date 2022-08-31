@@ -9,5 +9,6 @@ namespace CarteiraDigitalAPI.Models
         public decimal Saldo { get; set; }
         public string Banco { get; set; }
         public Usuario Usuario { get; set; }
+        public List<Operacao>? Operacoes { get; set; }
     }
 }

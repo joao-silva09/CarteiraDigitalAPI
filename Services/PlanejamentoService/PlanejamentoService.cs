@@ -38,6 +38,7 @@ namespace CarteiraDigitalAPI.Services.PlanejamentoService
                 .Where(c => c.Id == GetUserId())
                 .Select(c => _mapper.Map<GetPlanejamentoDto>(c))
                 .ToListAsync();
+            serviceResponse.Message = "Planejamento adicionado com sucesso!";
             return serviceResponse;
 
         }
