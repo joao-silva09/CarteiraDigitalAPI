@@ -1,6 +1,7 @@
 ﻿using CarteiraDigitalAPI.Dtos.Conta;
 using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Dtos.Objetivo;
+using CarteiraDigitalAPI.Dtos.Operacao;
 
 namespace CarteiraDigitalAPI.Dtos.Usuario
 {
@@ -14,6 +15,6 @@ namespace CarteiraDigitalAPI.Dtos.Usuario
         public List<GetObjetivoDto> Objetivos { get; set; }
         public List<GetContaDto> Contas { get; set; }
         public List<GetDividaDto> Dividas { get; set; }
-        public List<Operacao> Operacoes { get; set; }
+        public List<GetOperacaoDto> Operacoes { get; set; }
     }
 }

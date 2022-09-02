@@ -7,7 +7,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
     {
         Task<ServiceResponse<List<GetOperacaoDto>>> GetAllOperacoes();
         Task<ServiceResponse<GetOperacaoDto>> GetOperacaoById(int operacaoId);
-        Task<ServiceResponse<List<GetOperacaoDto>>> AddOperacap(AddOperacaoDto newOperacao);
+        Task<ServiceResponse<List<GetOperacaoDto>>> AddOperacao(AddOperacaoDto newOperacao);
         Task<ServiceResponse<GetOperacaoDto>> UpdateOperacao(UpdateOperacaoDto updatedOperacao);
         Task<ServiceResponse<List<GetOperacaoDto>>> DeleteOperacao(int operacaoId);
     }
