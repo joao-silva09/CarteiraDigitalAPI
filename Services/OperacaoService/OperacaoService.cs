@@ -85,7 +85,6 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             var serviceResponse = new ServiceResponse<GetOperacaoDto>();
             var dbOperacoes = await _context.Operacoes
                 .Where(c => c.Usuario.Id == GetUserId())
-                .Where(c => c.Conta.Id == 
                 .FirstOrDefaultAsync(c => c.Id == operacaoId && c.Usuario.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetOperacaoDto>(dbOperacoes);
             return serviceResponse;
