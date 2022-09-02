@@ -85,33 +85,32 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             var serviceResponse = new ServiceResponse<GetOperacaoDto>();
             var dbOperacoes = await _context.Operacoes
                 .Where(c => c.Usuario.Id == GetUserId())
+                .Where(c => c.Conta.Id == 
                 .FirstOrDefaultAsync(c => c.Id == operacaoId && c.Usuario.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetOperacaoDto>(dbOperacoes);
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetOperacaoDto>> UpdateOperacao(UpdateOperacaoDto updatedDivida)
+        public async Task<ServiceResponse<GetOperacaoDto>> UpdateOperacao(UpdateOperacaoDto updatedOperacao)
         {
             ServiceResponse<GetOperacaoDto> response = new ServiceResponse<GetOperacaoDto>();
             try
             {
-                var divida = await _context.Dividas
+                var operacao = await _context.Operacoes
                     .Include(c => c.Usuario)
-                    .FirstOrDefaultAsync(c => c.Id == updatedDivida.Id);
+                    .FirstOrDefaultAsync(c => c.Id == updatedOperacao.Id);
 
-                if (divida.Usuario.Id == GetUserId())
+                if (operacao.Usuario.Id == GetUserId())
                 {
-                    divida.Titulo = updatedDivida.Titulo;
-                    divida.NomeDevedor = updatedDivida.NomeDevedor;
-                    divida.Descricao = updatedDivida.Descricao;
-                    divida.Valor = updatedDivida.Valor;
-                    divida.DataDivida = updatedDivida.DataDivida;
-                    divida.DataVencimento = updatedDivida.DataVencimento;
-                    divida.IsAtivo = updatedDivida.IsAtivo;
+                    operacao.Titulo = updatedOperacao.Titulo;
+                    operacao.Descricao = updatedOperacao.Descricao;
+                    operacao.Valor = updatedOperacao.Valor;
+                    operacao.DataOperacao = updatedOperacao.DataOperacao;
+                    operacao.IsGasto = updatedOperacao.IsGasto;
 
                     await _context.SaveChangesAsync();
 
-                    response.Data = _mapper.Map<GetOperacaoDto>(divida);
+                    response.Data = _mapper.Map<GetOperacaoDto>(operacao);
                 }
                 else
                 {
