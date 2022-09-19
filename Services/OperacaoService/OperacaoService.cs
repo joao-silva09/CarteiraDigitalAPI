@@ -25,12 +25,13 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
         private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
             .FindFirstValue(ClaimTypes.NameIdentifier));
 
-        public async Task<ServiceResponse<List<GetOperacaoDto>>> AddOperacao(AddOperacaoDto newOperacao)
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> AddReceita(AddOperacaoDto newOperacao, int contaId)
         {
             var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
+            Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
             operacao.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
-
+            conta.Saldo += operacao.Valor;
             _context.Operacoes.Add(operacao);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Operacoes
@@ -40,6 +41,23 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             return serviceResponse;
 
         }
+        
+         public async Task<ServiceResponse<List<GetOperacaoDto>>> AddGasto(AddOperacaoDto newOperacao, int contaId)
+         {
+            var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
+            Operacao operacao = _mapper.Map<Operacao>(newOperacao);
+            operacao.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
+            Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+            conta.Saldo -= operacao.Valor;
+            _context.Operacoes.Add(operacao);
+            await _context.SaveChangesAsync();
+            serviceResponse.Data = await _context.Operacoes
+                .Where(c => c.Id == GetUserId())
+                .Select(c => _mapper.Map<GetOperacaoDto>(c))
+                .ToListAsync();
+            return serviceResponse;
+
+         }
 
         public async Task<ServiceResponse<List<GetOperacaoDto>>> DeleteOperacao(int operacaoId)
         {

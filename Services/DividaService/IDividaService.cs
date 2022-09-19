@@ -10,5 +10,6 @@ namespace CarteiraDigitalAPI.Services.DividaService
         Task<ServiceResponse<List<GetDividaDto>>> AddDivida(AddDividaDto newDivida);
         Task<ServiceResponse<GetDividaDto>> UpdateDivida(UpdateDividaDto updatedDivida);
         Task<ServiceResponse<List<GetDividaDto>>> DeleteDivida(int dividaId);
+        Task<ServiceResponse<List<GetDividaDto>>> PagarDivida(int dividaId, int contaId);
     }
 }

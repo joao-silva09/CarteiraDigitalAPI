@@ -60,5 +60,16 @@ namespace CarteiraDigitalAPI.Controllers
             }
             return Ok(response);
         }
+
+        [HttpDelete("{dividaId}/{contaId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> PagarDividas(int dividaId, int contaId)
+        {
+            var response = await _dividaService.PagarDivida(dividaId, contaId);
+            if (response.Data == null)
+            {
+                return NotFound(response);
+            }
+            return Ok(response);
+        }
     }
 }

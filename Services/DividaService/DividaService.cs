@@ -31,7 +31,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             var serviceResponse = new ServiceResponse<List<GetDividaDto>>();
             Divida divida = _mapper.Map<Divida>(newDivida);
             divida.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
-            
+
             _context.Dividas.Add(divida);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Dividas
@@ -73,11 +73,12 @@ namespace CarteiraDigitalAPI.Services.DividaService
 
         public async Task<ServiceResponse<List<GetDividaDto>>> GetAllDividas()
         {
-            var response = new ServiceResponse<List<GetDividaDto>>();
-            var dbCharacters = await _context.Dividas
+            ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
+            List<Divida> dbDividas = await _context.Dividas
                 .Where(c => c.Usuario.Id == GetUserId())
+                .Include(c => c.Usuario)
                 .ToListAsync();
-            response.Data = dbCharacters.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
+            response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
             return response;
         }
 
@@ -99,7 +100,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
                 var divida = await _context.Dividas
                     .Include(c => c.Usuario)
                     .FirstOrDefaultAsync(c => c.Id == updatedDivida.Id);
-                
+
                 if (divida.Usuario.Id == GetUserId())
                 {
                     divida.Titulo = updatedDivida.Titulo;
@@ -120,6 +121,44 @@ namespace CarteiraDigitalAPI.Services.DividaService
                     response.Message = "Dívida não encontrada";
                 }
 
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetDividaDto>>> PagarDivida(int dividaId, int contaId)
+        {
+            ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
+            try
+            {
+                Divida divida = await _context.Dividas.FirstOrDefaultAsync(c => c.Id == dividaId && c.Usuario.Id == GetUserId());
+                Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+                if (divida != null)
+                {
+                    if (divida.IsGasto)
+                    {
+                        conta.Saldo -= divida.Valor;
+                    }
+                    else
+                    {
+                        conta.Saldo += divida.Valor;
+                    }
+                    _context.Dividas.Remove(divida);
+                    await _context.SaveChangesAsync();
+                    response.Data = _context.Dividas
+                        .Where(c => c.Usuario.Id == GetUserId())
+                        .Select(c => _mapper.Map<GetDividaDto>(c))
+                        .ToList();
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Divida não encontrada";
+                }
             }
             catch (Exception ex)
             {

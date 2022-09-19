@@ -9,5 +9,6 @@
         public DateTime DataDivida { get; set; }
         public DateTime DataVencimento { get; set; }
         public bool IsAtivo { get; set; }
+        public bool IsGasto { get; set; }
     }
 }
