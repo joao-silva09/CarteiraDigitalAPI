@@ -2,6 +2,7 @@
 using CarteiraDigitalAPI.Data;
 using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Models;
+using CarteiraDigitalAPI.Models.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -139,7 +140,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
                 Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
                 if (divida != null)
                 {
-                    if (divida.IsGasto)
+                    if (divida.TipoDivida == TipoDivida.Gasto)
                     {
                         conta.Saldo -= divida.Valor;
                     }
@@ -147,6 +148,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
                     {
                         conta.Saldo += divida.Valor;
                     }
+                    divida.IsAtivo = false;
                     _context.Dividas.Remove(divida);
                     await _context.SaveChangesAsync();
                     response.Data = _context.Dividas
@@ -165,6 +167,28 @@ namespace CarteiraDigitalAPI.Services.DividaService
                 response.Success = false;
                 response.Message = ex.Message;
             }
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetDividaDto>>> GetDividasAPagar()
+        {
+            ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
+            List<Divida> dbDividas = await _context.Dividas
+                .Where(c => c.Usuario.Id == GetUserId() && c.TipoDivida == TipoDivida.Gasto)
+                .Include(c => c.Usuario)
+                .ToListAsync();
+            response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetDividaDto>>> GetDividasAReceber()
+        {
+            ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
+            List<Divida> dbDividas = await _context.Dividas
+                .Where(c => c.Usuario.Id == GetUserId() && c.TipoDivida == TipoDivida.Recebimento)
+                .Include(c => c.Usuario)
+                .ToListAsync();
+            response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
             return response;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using CarteiraDigitalAPI.Dtos.Usuario;
+using CarteiraDigitalAPI.Models.Enum;
 
 namespace CarteiraDigitalAPI.Dtos.Conta
 {
@@ -7,6 +8,6 @@ namespace CarteiraDigitalAPI.Dtos.Conta
         public int Id { get; set; }
         public string Titulo { get; set; }
         public decimal Saldo { get; set; }
-        public string Banco { get; set; }
+        public Banco Banco { get; set; }
     }
 }

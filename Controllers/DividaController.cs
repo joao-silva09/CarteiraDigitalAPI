@@ -33,6 +33,18 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("Get/APagar")]
+        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> GetDividasAPagar()
+        {
+            return Ok(await _dividaService.GetDividasAPagar());
+        }
+        
+        [HttpGet("Get/AReceber")]
+        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> GetDividasAReceber()
+        {
+            return Ok(await _dividaService.GetDividasAReceber());
+        }
+
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> Add(AddDividaDto newDivida)
         {

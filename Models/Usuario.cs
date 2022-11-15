@@ -10,5 +10,6 @@
         public List<Objetivo>? Objetivos { get; set; }
         public List<Conta>? Contas { get; set; }
         public List<Divida>? Dividas { get; set; }
+        public List<Operacao>? Operacoes { get; set; }
     }
 }

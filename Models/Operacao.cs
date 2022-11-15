@@ -8,8 +8,8 @@
         public decimal Valor { get; set; }
         public DateTime DataOperacao { get; set; }
         public bool IsGasto { get; set; }
-        public Usuario Usuario { get; set; }
         public List<Categoria>? Categorias { get; set; }
-        public Conta Conta { get; set; }
+        public Conta? Conta { get; set; }
+        public Usuario? Usuario { get; set; }
     }
 }

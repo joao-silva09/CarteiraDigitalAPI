@@ -4,7 +4,7 @@
 
 namespace CarteiraDigitalAPI.Migrations
 {
-    public partial class updateOperacaoEntitie : Migration
+    public partial class test : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,48 +29,34 @@ namespace CarteiraDigitalAPI.Migrations
                 table: "Orcamentos",
                 newName: "IX_Orcamentos_CategoriaId");
 
-            migrationBuilder.AlterColumn<int>(
+            migrationBuilder.RenameColumn(
                 name: "UsuarioId",
                 table: "Operacoes",
-                type: "int",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
+                newName: "ContaId");
 
-            migrationBuilder.AddColumn<int>(
-                name: "ContaId",
+            migrationBuilder.RenameIndex(
+                name: "IX_Operacoes_UsuarioId",
                 table: "Operacoes",
-                type: "int",
+                newName: "IX_Operacoes_ContaId");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsGasto",
+                table: "Dividas",
+                type: "bit",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: false);
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Orcamentos",
                 table: "Orcamentos",
                 column: "Id");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Operacoes_ContaId",
-                table: "Operacoes",
-                column: "ContaId");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_Operacoes_Contas_ContaId",
                 table: "Operacoes",
                 column: "ContaId",
                 principalTable: "Contas",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Operacoes_Usuarios_UsuarioId",
-                table: "Operacoes",
-                column: "UsuarioId",
-                principalTable: "Usuarios",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Orcamentos_Categorias_CategoriaId",
@@ -88,10 +74,6 @@ namespace CarteiraDigitalAPI.Migrations
                 table: "Operacoes");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Operacoes_Usuarios_UsuarioId",
-                table: "Operacoes");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Orcamentos_Categorias_CategoriaId",
                 table: "Orcamentos");
 
@@ -99,13 +81,9 @@ namespace CarteiraDigitalAPI.Migrations
                 name: "PK_Orcamentos",
                 table: "Orcamentos");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Operacoes_ContaId",
-                table: "Operacoes");
-
             migrationBuilder.DropColumn(
-                name: "ContaId",
-                table: "Operacoes");
+                name: "IsGasto",
+                table: "Dividas");
 
             migrationBuilder.RenameTable(
                 name: "Orcamentos",
@@ -116,13 +94,15 @@ namespace CarteiraDigitalAPI.Migrations
                 table: "orcamentos",
                 newName: "IX_orcamentos_CategoriaId");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "UsuarioId",
+            migrationBuilder.RenameColumn(
+                name: "ContaId",
                 table: "Operacoes",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
+                newName: "UsuarioId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_Operacoes_ContaId",
+                table: "Operacoes",
+                newName: "IX_Operacoes_UsuarioId");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_orcamentos",

@@ -2,6 +2,7 @@
 using CarteiraDigitalAPI.Data;
 using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Dtos.Operacao;
+using CarteiraDigitalAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -30,12 +31,14 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
             Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
-            operacao.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
+            operacao.Conta = conta;
+            operacao.IsGasto = false;
             conta.Saldo += operacao.Valor;
             _context.Operacoes.Add(operacao);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Operacoes
-                .Where(c => c.Id == GetUserId())
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
                 .Select(c => _mapper.Map<GetOperacaoDto>(c))
                 .ToListAsync();
             return serviceResponse;
@@ -46,13 +49,14 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
          {
             var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
-            operacao.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
             Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+            operacao.Conta = conta;
             conta.Saldo -= operacao.Valor;
             _context.Operacoes.Add(operacao);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Operacoes
-                .Where(c => c.Id == GetUserId())
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
                 .Select(c => _mapper.Map<GetOperacaoDto>(c))
                 .ToListAsync();
             return serviceResponse;
@@ -64,20 +68,20 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             ServiceResponse<List<GetOperacaoDto>> response = new ServiceResponse<List<GetOperacaoDto>>();
             try
             {
-                Operacao operacao = await _context.Operacoes.FirstOrDefaultAsync(c => c.Id == operacaoId && c.Usuario.Id == GetUserId());
+                Operacao operacao = await _context.Operacoes.FirstOrDefaultAsync(c => c.Id == operacaoId && c.Conta.Usuario.Id == GetUserId());
                 if (operacao != null)
                 {
                     _context.Operacoes.Remove(operacao);
                     await _context.SaveChangesAsync();
                     response.Data = _context.Operacoes
-                        .Where(c => c.Usuario.Id == GetUserId())
+                        .Where(c => c.Conta.Usuario.Id == GetUserId())
                         .Select(c => _mapper.Map<GetOperacaoDto>(c))
                         .ToList();
                 }
                 else
                 {
                     response.Success = false;
-                    response.Message = "Divida não encontrada";
+                    response.Message = "Operação não encontrada";
                 }
             }
             catch (Exception ex)
@@ -92,7 +96,19 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
         {
             var response = new ServiceResponse<List<GetOperacaoDto>>();
             var dbOperacoes = await _context.Operacoes
-                .Where(c => c.Usuario.Id == GetUserId())
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .ToListAsync();
+            response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
+            return response;
+        } 
+        
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByConta(int contaId)
+        {
+            var response = new ServiceResponse<List<GetOperacaoDto>>();
+            var dbOperacoes = await _context.Operacoes
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId() && c.Conta.Id == contaId)
                 .ToListAsync();
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
@@ -102,8 +118,9 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
         {
             var serviceResponse = new ServiceResponse<GetOperacaoDto>();
             var dbOperacoes = await _context.Operacoes
-                .Where(c => c.Usuario.Id == GetUserId())
-                .FirstOrDefaultAsync(c => c.Id == operacaoId && c.Usuario.Id == GetUserId());
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .FirstOrDefaultAsync(c => c.Id == operacaoId && c.Conta.Usuario.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetOperacaoDto>(dbOperacoes);
             return serviceResponse;
         }
@@ -114,10 +131,10 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             try
             {
                 var operacao = await _context.Operacoes
-                    .Include(c => c.Usuario)
+                    .Include(c => c.Conta.Usuario)
                     .FirstOrDefaultAsync(c => c.Id == updatedOperacao.Id);
 
-                if (operacao.Usuario.Id == GetUserId())
+                if (operacao.Conta.Usuario.Id == GetUserId())
                 {
                     operacao.Titulo = updatedOperacao.Titulo;
                     operacao.Descricao = updatedOperacao.Descricao;

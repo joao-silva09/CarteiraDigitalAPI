@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarteiraDigitalAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220915233014_updateOperacaoEntitie")]
-    partial class updateOperacaoEntitie
+    [Migration("20221112013238_test")]
+    partial class test
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -99,6 +99,9 @@ namespace CarteiraDigitalAPI.Migrations
                     b.Property<bool>("IsAtivo")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsGasto")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NomeDevedor")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -160,7 +163,7 @@ namespace CarteiraDigitalAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ContaId")
+                    b.Property<int?>("ContaId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataOperacao")
@@ -177,17 +180,12 @@ namespace CarteiraDigitalAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContaId");
-
-                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Operacoes");
                 });
@@ -331,19 +329,9 @@ namespace CarteiraDigitalAPI.Migrations
                 {
                     b.HasOne("CarteiraDigitalAPI.Models.Conta", "Conta")
                         .WithMany("Operacoes")
-                        .HasForeignKey("ContaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CarteiraDigitalAPI.Models.Usuario", "Usuario")
-                        .WithMany("Operacoes")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContaId");
 
                     b.Navigation("Conta");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("CarteiraDigitalAPI.Models.Orcamento", b =>
@@ -405,8 +393,6 @@ namespace CarteiraDigitalAPI.Migrations
                     b.Navigation("Dividas");
 
                     b.Navigation("Objetivos");
-
-                    b.Navigation("Operacoes");
                 });
 #pragma warning restore 612, 618
         }

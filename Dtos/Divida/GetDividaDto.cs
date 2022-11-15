@@ -1,4 +1,6 @@
-﻿namespace CarteiraDigitalAPI.Dtos.Divida
+﻿using CarteiraDigitalAPI.Models.Enum;
+
+namespace CarteiraDigitalAPI.Dtos.Divida
 {
     public class GetDividaDto
     {
@@ -9,7 +11,7 @@
         public decimal Valor { get; set; }
         public DateTime DataDivida { get; set; }
         public DateTime DataVencimento { get; set; }
+        public TipoDivida TipoDivida { get; set; }
         public bool IsAtivo { get; set; }
-        public bool IsGasto { get; set; }
     }
 }

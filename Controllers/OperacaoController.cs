@@ -24,6 +24,12 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(await _operacaoService.GetAllOperacoes());
         }
 
+        [HttpGet("conta/{contaId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetByConta(int contaId)
+        {
+            return Ok(await _operacaoService.GetOperacoesByConta(contaId));
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<GetOperacaoDto>>> GetById(int id)
         {

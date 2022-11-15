@@ -4,6 +4,7 @@ using CarteiraDigitalAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarteiraDigitalAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221113044049_UpdateBancoInter")]
+    partial class UpdateBancoInter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,12 +98,12 @@ namespace CarteiraDigitalAPI.Migrations
                     b.Property<bool>("IsAtivo")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsGasto")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NomeDevedor")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoDivida")
-                        .HasColumnType("int");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
