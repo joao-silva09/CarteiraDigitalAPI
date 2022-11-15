@@ -1,4 +1,5 @@
-﻿using CarteiraDigitalAPI.Models.Enum;
+﻿using CarteiraDigitalAPI.Dtos.Conta;
+using CarteiraDigitalAPI.Models.Enum;
 
 namespace CarteiraDigitalAPI.Dtos.Divida
 {
@@ -13,5 +14,6 @@ namespace CarteiraDigitalAPI.Dtos.Divida
         public DateTime DataVencimento { get; set; }
         public TipoDivida TipoDivida { get; set; }
         public bool IsAtivo { get; set; }
+        public GetContaDto? Conta { get; set; }
     }
 }

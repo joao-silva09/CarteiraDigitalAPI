@@ -14,6 +14,9 @@ namespace CarteiraDigitalAPI.Controllers
             _authRepo = authRepo;
         }
 
+        /// <summary>
+        /// Cadastrar um novo usuário.
+        /// </summary>
         [HttpPost("register")]
         public async Task<ActionResult<ServiceResponse<int>>> Register(UsuarioRegisterDto request)
         {
@@ -28,6 +31,9 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Fazer login.
+        /// </summary>
         [HttpPost("login")]
         public async Task<ActionResult<ServiceResponse<string>>> Login(UsuarioLoginDto request)
         {

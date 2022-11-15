@@ -36,7 +36,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             _context.Dividas.Add(divida);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Dividas
-                .Where(c => c.Id == GetUserId())
+                .Where(c => c.Usuario.Id == GetUserId())
                 .Select(c => _mapper.Map<GetDividaDto>(c))
                 .ToListAsync();
             return serviceResponse;
@@ -78,6 +78,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             List<Divida> dbDividas = await _context.Dividas
                 .Where(c => c.Usuario.Id == GetUserId())
                 .Include(c => c.Usuario)
+                .Include(c => c.Conta)
                 .ToListAsync();
             response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
             return response;
@@ -88,6 +89,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             var serviceResponse = new ServiceResponse<GetDividaDto>();
             var dbConta = await _context.Dividas
                 .Where(c => c.Usuario.Id == GetUserId())
+                .Include(c => c.Conta)
                 .FirstOrDefaultAsync(c => c.Id == dividaId && c.Usuario.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetDividaDto>(dbConta);
             return serviceResponse;
@@ -149,10 +151,11 @@ namespace CarteiraDigitalAPI.Services.DividaService
                         conta.Saldo += divida.Valor;
                     }
                     divida.IsAtivo = false;
-                    _context.Dividas.Remove(divida);
+                    divida.Conta = conta;
                     await _context.SaveChangesAsync();
                     response.Data = _context.Dividas
                         .Where(c => c.Usuario.Id == GetUserId())
+                        .Include(c => c.Conta)
                         .Select(c => _mapper.Map<GetDividaDto>(c))
                         .ToList();
                 }
@@ -174,7 +177,10 @@ namespace CarteiraDigitalAPI.Services.DividaService
         {
             ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
             List<Divida> dbDividas = await _context.Dividas
-                .Where(c => c.Usuario.Id == GetUserId() && c.TipoDivida == TipoDivida.Gasto)
+                .Where(c => c.Usuario.Id == GetUserId())
+                .Where(c => c.TipoDivida == TipoDivida.Gasto)
+                .Where(c => c.IsAtivo == true)
+                .Include(c => c.Conta)
                 .Include(c => c.Usuario)
                 .ToListAsync();
             response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
@@ -185,7 +191,22 @@ namespace CarteiraDigitalAPI.Services.DividaService
         {
             ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
             List<Divida> dbDividas = await _context.Dividas
-                .Where(c => c.Usuario.Id == GetUserId() && c.TipoDivida == TipoDivida.Recebimento)
+                .Where(c => c.Usuario.Id == GetUserId())
+                .Where(c => c.TipoDivida == TipoDivida.Recebimento)
+                .Where(c => c.IsAtivo == true)
+                .Include(c => c.Conta)
+                .Include(c => c.Usuario)
+                .ToListAsync();
+            response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetDividaDto>>> GetDividasPagas()
+        {
+            ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
+            List<Divida> dbDividas = await _context.Dividas
+                .Where(c => c.Usuario.Id == GetUserId() && c.IsAtivo == false)
+                .Include(c => c.Conta)
                 .Include(c => c.Usuario)
                 .ToListAsync();
             response.Data = dbDividas.Select(c => _mapper.Map<GetDividaDto>(c)).ToList();

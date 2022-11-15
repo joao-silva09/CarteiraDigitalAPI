@@ -18,12 +18,18 @@ namespace CarteiraDigitalAPI.Controllers
             _objetivoService = objetivoService;
         }
 
+        /// <summary>
+        /// Buscar todos os objetivos.
+        /// </summary>
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> GetAll()
         {
             return Ok(await _objetivoService.GetAllObjetivos());
         }
 
+        /// <summary>
+        /// Buscar um objetivo por id.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<GetObjetivoDto>>> GetById(int id)
         {
@@ -35,12 +41,18 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Criar um novo objetivo.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> Add(AddObjetivoDto newObjetivo)
         {
             return Ok(await _objetivoService.AddObjetivo(newObjetivo));
         }
 
+        /// <summary>
+        /// Atualizar as informações de um objetivo.
+        /// </summary>
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<GetObjetivoDto>>> Update(UpdateObjetivoDto updatedObjetivo)
         {
@@ -52,6 +64,9 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Excluir um objetivo.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> Delete(int id)
         {

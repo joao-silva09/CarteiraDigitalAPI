@@ -16,12 +16,18 @@ namespace CarteiraDigitalAPI.Controllers
             _dividaService = dividaService;
         }
 
+        /// <summary>
+        /// Buscar todas as dívidas do usuário.
+        /// </summary>
         [HttpGet("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> GetAll()
         {
             return Ok(await _dividaService.GetAllDividas());
         }
 
+        /// <summary>
+        /// Buscar uma dívida por id.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceResponse<GetDividaDto>>> GetById(int id)
         {
@@ -33,24 +39,45 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Buscar todas as dívidas a pagar.
+        /// </summary>
         [HttpGet("Get/APagar")]
         public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> GetDividasAPagar()
         {
             return Ok(await _dividaService.GetDividasAPagar());
         }
-        
+
+        /// <summary>
+        /// Buscar todas as dívidas a receber.
+        /// </summary>
         [HttpGet("Get/AReceber")]
         public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> GetDividasAReceber()
         {
             return Ok(await _dividaService.GetDividasAReceber());
         }
+        
+        /// <summary>
+        /// Buscar todas as dívidas pagas.
+        /// </summary>
+        [HttpGet("Get/pagas")]
+        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> GetDividasPagas()
+        {
+            return Ok(await _dividaService.GetDividasPagas());
+        }
 
+        /// <summary>
+        /// Adicionar uma nova dívida.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> Add(AddDividaDto newDivida)
         {
             return Ok(await _dividaService.AddDivida(newDivida));
         }
 
+        /// <summary>
+        /// Atualizar as informações de uma dívida.
+        /// </summary>
         [HttpPut]
         public async Task<ActionResult<ServiceResponse<GetDividaDto>>> Update(UpdateDividaDto updatedDivida)
         {
@@ -62,6 +89,9 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Excluir uma dívida.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> Delete(int id)
         {
@@ -73,8 +103,11 @@ namespace CarteiraDigitalAPI.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("{dividaId}/{contaId}")]
-        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> PagarDividas(int dividaId, int contaId)
+        /// <summary>
+        /// Pagar uma dívida.
+        /// </summary>
+        [HttpPost("{dividaId}/{contaId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> PagarDivida(int dividaId, int contaId)
         {
             var response = await _dividaService.PagarDivida(dividaId, contaId);
             if (response.Data == null)

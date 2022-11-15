@@ -13,6 +13,7 @@ namespace CarteiraDigitalAPI.Models
         public DateTime DataVencimento { get; set; }
         public TipoDivida TipoDivida { get; set; }
         public bool IsAtivo { get; set; }
+        public Conta? Conta { get; set; }
         public Usuario Usuario { get; set; }
     }
 }
