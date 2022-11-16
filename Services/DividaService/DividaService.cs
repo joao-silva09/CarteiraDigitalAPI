@@ -32,7 +32,8 @@ namespace CarteiraDigitalAPI.Services.DividaService
             var serviceResponse = new ServiceResponse<List<GetDividaDto>>();
             Divida divida = _mapper.Map<Divida>(newDivida);
             divida.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
-
+            divida.DataPagamento = null;
+            divida.SituacaoDivida = SituacaoDivida.Ativa;
             _context.Dividas.Add(divida);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Dividas
@@ -102,6 +103,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             {
                 var divida = await _context.Dividas
                     .Include(c => c.Usuario)
+                    .Include(c => c.Conta)
                     .FirstOrDefaultAsync(c => c.Id == updatedDivida.Id);
 
                 if (divida.Usuario.Id == GetUserId())
@@ -110,9 +112,8 @@ namespace CarteiraDigitalAPI.Services.DividaService
                     divida.NomeDevedor = updatedDivida.NomeDevedor;
                     divida.Descricao = updatedDivida.Descricao;
                     divida.Valor = updatedDivida.Valor;
-                    divida.DataDivida = updatedDivida.DataDivida;
+                    divida.DataPagamento = updatedDivida.DataPagamento;
                     divida.DataVencimento = updatedDivida.DataVencimento;
-                    divida.IsAtivo = updatedDivida.IsAtivo;
 
                     await _context.SaveChangesAsync();
 
@@ -150,7 +151,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
                     {
                         conta.Saldo += divida.Valor;
                     }
-                    divida.IsAtivo = false;
+                    divida.SituacaoDivida = SituacaoDivida.Paga;
                     divida.Conta = conta;
                     await _context.SaveChangesAsync();
                     response.Data = _context.Dividas
@@ -179,7 +180,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             List<Divida> dbDividas = await _context.Dividas
                 .Where(c => c.Usuario.Id == GetUserId())
                 .Where(c => c.TipoDivida == TipoDivida.Gasto)
-                .Where(c => c.IsAtivo == true)
+                .Where(c => c.SituacaoDivida == SituacaoDivida.Ativa)
                 .Include(c => c.Conta)
                 .Include(c => c.Usuario)
                 .ToListAsync();
@@ -193,7 +194,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
             List<Divida> dbDividas = await _context.Dividas
                 .Where(c => c.Usuario.Id == GetUserId())
                 .Where(c => c.TipoDivida == TipoDivida.Recebimento)
-                .Where(c => c.IsAtivo == true)
+                .Where(c => c.SituacaoDivida == SituacaoDivida.Ativa)
                 .Include(c => c.Conta)
                 .Include(c => c.Usuario)
                 .ToListAsync();
@@ -205,7 +206,7 @@ namespace CarteiraDigitalAPI.Services.DividaService
         {
             ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
             List<Divida> dbDividas = await _context.Dividas
-                .Where(c => c.Usuario.Id == GetUserId() && c.IsAtivo == false)
+                .Where(c => c.Usuario.Id == GetUserId() && c.SituacaoDivida == SituacaoDivida.Paga)
                 .Include(c => c.Conta)
                 .Include(c => c.Usuario)
                 .ToListAsync();

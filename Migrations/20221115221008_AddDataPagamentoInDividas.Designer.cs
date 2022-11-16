@@ -4,6 +4,7 @@ using CarteiraDigitalAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarteiraDigitalAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221115221008_AddDataPagamentoInDividas")]
+    partial class AddDataPagamentoInDividas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,18 +92,18 @@ namespace CarteiraDigitalAPI.Migrations
                     b.Property<DateTime?>("DataPagamento")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DataVencimento")
+                    b.Property<DateTime>("DataVencimento")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAtivo")
+                        .HasColumnType("bit");
+
                     b.Property<string>("NomeDevedor")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SituacaoDivida")
-                        .HasColumnType("int");
 
                     b.Property<int>("TipoDivida")
                         .HasColumnType("int");
