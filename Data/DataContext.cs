@@ -20,26 +20,6 @@ namespace CarteiraDigitalAPI.Data
         public DbSet<Orcamento> Orcamentos { get; set; }
         public DbSet<Planejamento> Planejamentos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
-
-        public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
-        {
-            public DateOnlyConverter()
-                : base(dateOnly =>
-                        dateOnly.ToDateTime(TimeOnly.MinValue),
-                    dateTime => DateOnly.FromDateTime(dateTime))
-            { }
-        }
-
-        protected override void ConfigureConventions(ModelConfigurationBuilder builder)
-        {
-
-            builder.Properties<DateOnly>()
-                .HaveConversion<DateOnlyConverter>()
-                .HaveColumnType("date");
-
-            base.ConfigureConventions(builder);
-
-        }
     }
 }
 

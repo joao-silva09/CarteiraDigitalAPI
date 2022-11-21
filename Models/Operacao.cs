@@ -1,4 +1,6 @@
-﻿namespace CarteiraDigitalAPI.Models
+﻿using CarteiraDigitalAPI.Models.Enum;
+
+namespace CarteiraDigitalAPI.Models
 {
     public class Operacao
     {
@@ -6,8 +8,8 @@
         public string Titulo { get; set; }
         public string Descricao { get; set; }
         public decimal Valor { get; set; }
-        public DateTime DataOperacao { get; set; }
-        public bool IsGasto { get; set; }
+        public string DataOperacao { get; set; }
+        public TipoDivida TipoDivida { get; set; }
         public List<Categoria>? Categorias { get; set; }
         public Conta? Conta { get; set; }
         public Usuario? Usuario { get; set; }

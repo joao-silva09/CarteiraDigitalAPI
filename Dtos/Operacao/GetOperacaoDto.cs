@@ -1,4 +1,5 @@
 ﻿using CarteiraDigitalAPI.Dtos.Conta;
+using CarteiraDigitalAPI.Models.Enum;
 
 namespace CarteiraDigitalAPI.Dtos.Operacao
 {
@@ -8,8 +9,8 @@ namespace CarteiraDigitalAPI.Dtos.Operacao
         public string Titulo { get; set; }
         public string Descricao { get; set; }
         public decimal Valor { get; set; }
-        public DateTime DataOperacao { get; set; }
-        public bool IsGasto { get; set; }
+        public string DataOperacao { get; set; }
+        public TipoDivida TipoDivida { get; set; }
         public GetContaDto Conta { get; set; }
     }
 }

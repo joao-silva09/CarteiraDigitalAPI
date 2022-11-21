@@ -32,7 +32,24 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
             Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
             operacao.Conta = conta;
-            operacao.IsGasto = false;
+            conta.Saldo += operacao.Valor;
+            _context.Operacoes.Add(operacao);
+            await _context.SaveChangesAsync();
+            serviceResponse.Data = await _context.Operacoes
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .Select(c => _mapper.Map<GetOperacaoDto>(c))
+                .ToListAsync();
+            return serviceResponse;
+
+        }
+
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> AddOperacao(AddOperacaoDto newOperacao, int contaId)
+        {
+            var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
+            Operacao operacao = _mapper.Map<Operacao>(newOperacao);
+            Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+            operacao.Conta = conta;
             conta.Saldo += operacao.Valor;
             _context.Operacoes.Add(operacao);
             await _context.SaveChangesAsync();
@@ -119,8 +136,8 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             var serviceResponse = new ServiceResponse<GetOperacaoDto>();
             var dbOperacoes = await _context.Operacoes
                 .Include(c => c.Conta)
-                .Where(c => c.Conta.Usuario.Id == GetUserId())
-                .FirstOrDefaultAsync(c => c.Id == operacaoId && c.Conta.Usuario.Id == GetUserId());
+                .Where(c => c.Usuario.Id == GetUserId())
+                .FirstOrDefaultAsync(c => c.Id == operacaoId && c.Usuario.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetOperacaoDto>(dbOperacoes);
             return serviceResponse;
         }
@@ -140,7 +157,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                     operacao.Descricao = updatedOperacao.Descricao;
                     operacao.Valor = updatedOperacao.Valor;
                     operacao.DataOperacao = updatedOperacao.DataOperacao;
-                    operacao.IsGasto = updatedOperacao.IsGasto;
+                    operacao.TipoDivida = updatedOperacao.TipoDivida;
 
                     await _context.SaveChangesAsync();
 

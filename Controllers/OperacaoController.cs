@@ -95,5 +95,14 @@ namespace CarteiraDigitalAPI.Controllers
         {
             return Ok(await _operacaoService.AddReceita(newOperacao, contaId));
         }
+
+        /// <summary>
+        /// Adicionar uma nova operação.
+        /// </summary>
+        [HttpPost("{contaId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> AddOperacao(AddOperacaoDto newOperacao, int contaId)
+        {
+            return Ok(await _operacaoService.AddOperacao(newOperacao, contaId));
+        }
     }
 }
