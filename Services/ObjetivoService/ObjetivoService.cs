@@ -2,6 +2,7 @@
 using CarteiraDigitalAPI.Data;
 using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Dtos.Objetivo;
+using CarteiraDigitalAPI.Models.Enum;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -30,11 +31,12 @@ namespace CarteiraDigitalAPI.Services.ObjetivoService
             var serviceResponse = new ServiceResponse<List<GetObjetivoDto>>();
             Objetivo objetivo = _mapper.Map<Objetivo>(newObjetivo);
             objetivo.Usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == GetUserId());
-
+            objetivo.SituacaoObjetivo = SituacaoObjetivo.Não_Cumprido;
             _context.Objetivos.Add(objetivo);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Objetivos
                 .Where(c => c.Id == GetUserId())
+                .Include(c => c.Conta)
                 .Select(c => _mapper.Map<GetObjetivoDto>(c))
                 .ToListAsync();
             return serviceResponse;
@@ -53,6 +55,7 @@ namespace CarteiraDigitalAPI.Services.ObjetivoService
                     await _context.SaveChangesAsync();
                     response.Data = _context.Objetivos
                         .Where(c => c.Usuario.Id == GetUserId())
+                        .Include(c => c.Conta)
                         .Select(c => _mapper.Map<GetObjetivoDto>(c))
                         .ToList();
                 }
@@ -75,6 +78,31 @@ namespace CarteiraDigitalAPI.Services.ObjetivoService
             var response = new ServiceResponse<List<GetObjetivoDto>>();
             var dbObjetivos = await _context.Objetivos
                 .Where(c => c.Usuario.Id == GetUserId())
+                .Include(c => c.Conta)
+                .ToListAsync();
+            response.Data = dbObjetivos.Select(c => _mapper.Map<GetObjetivoDto>(c)).ToList();
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetObjetivoDto>>> GetObjetivosACumprir()
+        {
+            var response = new ServiceResponse<List<GetObjetivoDto>>();
+            var dbObjetivos = await _context.Objetivos
+                .Where(c => c.Usuario.Id == GetUserId())
+                .Where(c => c.SituacaoObjetivo == SituacaoObjetivo.Não_Cumprido)
+                .Include(c => c.Conta)
+                .ToListAsync();
+            response.Data = dbObjetivos.Select(c => _mapper.Map<GetObjetivoDto>(c)).ToList();
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetObjetivoDto>>> GetObjetivosCumpridos()
+        {
+            var response = new ServiceResponse<List<GetObjetivoDto>>();
+            var dbObjetivos = await _context.Objetivos
+                .Where(c => c.Usuario.Id == GetUserId())
+                .Where(c => c.SituacaoObjetivo == SituacaoObjetivo.Cumprido)
+                .Include(c => c.Conta)
                 .ToListAsync();
             response.Data = dbObjetivos.Select(c => _mapper.Map<GetObjetivoDto>(c)).ToList();
             return response;
@@ -85,6 +113,7 @@ namespace CarteiraDigitalAPI.Services.ObjetivoService
             var serviceResponse = new ServiceResponse<GetObjetivoDto>();
             var dbObjetivos = await _context.Objetivos
                 .Where(c => c.Usuario.Id == GetUserId())
+                .Include(c => c.Conta)
                 .FirstOrDefaultAsync(c => c.Id == objetivoId && c.Usuario.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetObjetivoDto>(dbObjetivos);
             return serviceResponse;
@@ -104,8 +133,7 @@ namespace CarteiraDigitalAPI.Services.ObjetivoService
                     objetivo.Titulo = updatedObjetivo.Titulo;
                     objetivo.Valor = updatedObjetivo.Valor;
                     objetivo.Descricao = updatedObjetivo.Descricao;
-                    objetivo.IsCumprido = updatedObjetivo.IsCumprido;
-                    
+
                     await _context.SaveChangesAsync();
 
                     response.Data = _mapper.Map<GetObjetivoDto>(objetivo);
@@ -124,5 +152,46 @@ namespace CarteiraDigitalAPI.Services.ObjetivoService
             }
             return response;
         }
+
+        public async Task<ServiceResponse<List<GetObjetivoDto>>> CumprirObjetivo(int objetivoId, int? contaId)
+        {
+            ServiceResponse<List<GetObjetivoDto>> response = new ServiceResponse<List<GetObjetivoDto>>();
+            try
+            {
+                Objetivo objetivo = await _context.Objetivos.FirstOrDefaultAsync(c => c.Id == objetivoId && c.Usuario.Id == GetUserId());
+                Conta? conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+                if (objetivo != null)
+                {
+                    if (conta != null)
+                    {
+                        objetivo.Conta = conta;
+                        conta.Saldo -= objetivo.Valor;
+                    }
+                    else
+                    {
+                        objetivo.Conta = null;
+                    }
+                    objetivo.SituacaoObjetivo = SituacaoObjetivo.Cumprido;
+                    await _context.SaveChangesAsync();
+                    response.Data = _context.Objetivos
+                        .Where(c => c.Usuario.Id == GetUserId())
+                        .Include(c => c.Conta)
+                        .Select(c => _mapper.Map<GetObjetivoDto>(c))
+                        .ToList();
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Objetivo não encontrado";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
     }
 }

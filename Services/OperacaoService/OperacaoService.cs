@@ -3,6 +3,7 @@ using CarteiraDigitalAPI.Data;
 using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Dtos.Operacao;
 using CarteiraDigitalAPI.Models;
+using CarteiraDigitalAPI.Models.Enum;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -50,7 +51,14 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
             Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
             operacao.Conta = conta;
-            conta.Saldo += operacao.Valor;
+            if (operacao.TipoDivida == TipoDivida.Gasto)
+            {
+                conta.Saldo -= operacao.Valor;
+            }
+            else
+            {
+                conta.Saldo += operacao.Valor;
+            }
             _context.Operacoes.Add(operacao);
             await _context.SaveChangesAsync();
             serviceResponse.Data = await _context.Operacoes
@@ -61,9 +69,9 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             return serviceResponse;
 
         }
-        
-         public async Task<ServiceResponse<List<GetOperacaoDto>>> AddGasto(AddOperacaoDto newOperacao, int contaId)
-         {
+
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> AddGasto(AddOperacaoDto newOperacao, int contaId)
+        {
             var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
             Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
@@ -78,7 +86,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                 .ToListAsync();
             return serviceResponse;
 
-         }
+        }
 
         public async Task<ServiceResponse<List<GetOperacaoDto>>> DeleteOperacao(int operacaoId)
         {
@@ -118,8 +126,8 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                 .ToListAsync();
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
-        } 
-        
+        }
+
         public async Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByConta(int contaId)
         {
             var response = new ServiceResponse<List<GetOperacaoDto>>();

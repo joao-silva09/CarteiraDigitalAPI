@@ -11,5 +11,6 @@ namespace CarteiraDigitalAPI.Models
         public Usuario Usuario { get; set; }
         public List<Divida>? Dividas { get; set; }
         public List<Operacao>? Operacoes { get; set; }
+        public List<Objetivo>? Objetivos { get; set; }
     }
 }

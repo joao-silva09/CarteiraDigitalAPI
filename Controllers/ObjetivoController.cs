@@ -28,6 +28,24 @@ namespace CarteiraDigitalAPI.Controllers
         }
 
         /// <summary>
+        /// Buscar objetivos a cumprir.
+        /// </summary>
+        [HttpGet("Get/aCumprir")]
+        public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> GetACumprir()
+        {
+            return Ok(await _objetivoService.GetObjetivosACumprir());
+        }
+        
+        /// <summary>
+        /// Buscar objetivos cumpridos.
+        /// </summary>
+        [HttpGet("GetAll/cumpridos")]
+        public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> GetCumpridos()
+        {
+            return Ok(await _objetivoService.GetObjetivosCumpridos());
+        }
+
+        /// <summary>
         /// Buscar um objetivo por id.
         /// </summary>
         [HttpGet("{id}")]
@@ -48,6 +66,15 @@ namespace CarteiraDigitalAPI.Controllers
         public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> Add(AddObjetivoDto newObjetivo)
         {
             return Ok(await _objetivoService.AddObjetivo(newObjetivo));
+        }
+
+        /// <summary>
+        /// Cumprir um objetivo.
+        /// </summary>
+        [HttpPost("{objetivoId}/{contaId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetObjetivoDto>>>> Cumprir(int objetivoId, int? contaId)
+        {
+            return Ok(await _objetivoService.CumprirObjetivo(objetivoId, contaId));
         }
 
         /// <summary>

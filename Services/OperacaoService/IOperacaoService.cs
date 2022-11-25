@@ -1,5 +1,4 @@
 ﻿using CarteiraDigitalAPI.Dtos.Operacao;
-using CarteiraDigitalAPI.Dtos.Planejamento;
 
 namespace CarteiraDigitalAPI.Services.OperacaoService
 {
