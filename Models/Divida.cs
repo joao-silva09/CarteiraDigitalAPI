@@ -9,8 +9,8 @@ namespace CarteiraDigitalAPI.Models
         public string NomeDevedor { get; set; }
         public string? Descricao { get; set; }
         public decimal Valor { get; set; }
-        public string? DataVencimento { get; set; }
-        public string? DataPagamento { get; set; }
+        public DateTime? DataVencimento { get; set; }
+        public DateTime? DataPagamento { get; set; }
         public TipoDivida TipoDivida { get; set; }
         public SituacaoDivida SituacaoDivida { get; set; }
         public Conta? Conta { get; set; }
