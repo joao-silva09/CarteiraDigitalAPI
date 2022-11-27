@@ -128,6 +128,18 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             return response;
         }
 
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonth(int month, int year)
+        {
+            var response = new ServiceResponse<List<GetOperacaoDto>>();
+            var dbOperacoes = await _context.Operacoes
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
+                .ToListAsync();
+            response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
+            return response;
+        }
+
         public async Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByConta(int contaId)
         {
             var response = new ServiceResponse<List<GetOperacaoDto>>();

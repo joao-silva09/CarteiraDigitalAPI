@@ -26,6 +26,15 @@ namespace CarteiraDigitalAPI.Controllers
         {
             return Ok(await _operacaoService.GetAllOperacoes());
         }
+        
+        /// <summary>
+        /// Buscar todas as operações de um determinado mês.
+        /// </summary>
+        [HttpGet("Get/{month}/{year}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetByMonth(int month, int year)
+        {
+            return Ok(await _operacaoService.GetOperacoesByMonth(month, year));
+        }
 
         /// <summary>
         /// Buscar todas as operações de uma conta.
