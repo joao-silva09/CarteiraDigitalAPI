@@ -51,11 +51,11 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             Operacao operacao = _mapper.Map<Operacao>(newOperacao);
             Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
             operacao.Conta = conta;
-            if (operacao.TipoDivida == TipoDivida.Gasto)
+            if (operacao.TipoOperacao == TipoOperacao.Gasto)
             {
                 conta.Saldo -= operacao.Valor;
             }
-            else
+            else if (operacao.TipoOperacao == TipoOperacao.Recebimento)
             {
                 conta.Saldo += operacao.Valor;
             }
@@ -69,7 +69,6 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             return serviceResponse;
 
         }
-
         public async Task<ServiceResponse<List<GetOperacaoDto>>> AddGasto(AddOperacaoDto newOperacao, int contaId)
         {
             var serviceResponse = new ServiceResponse<List<GetOperacaoDto>>();
@@ -177,7 +176,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                     operacao.Descricao = updatedOperacao.Descricao;
                     operacao.Valor = updatedOperacao.Valor;
                     operacao.DataOperacao = updatedOperacao.DataOperacao;
-                    operacao.TipoDivida = updatedOperacao.TipoDivida;
+                    operacao.TipoOperacao = updatedOperacao.TipoOperacao;
 
                     await _context.SaveChangesAsync();
 

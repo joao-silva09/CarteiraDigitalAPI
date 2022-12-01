@@ -16,7 +16,7 @@ namespace CarteiraDigitalAPI.Models.Enum
         Inter = 9,
         C6_bank = 10,
         PicPay = 11,
-        Carteira_Pessoal = 12,
+        Carteira_Física= 12,
         Outros = 13
     }
 }
