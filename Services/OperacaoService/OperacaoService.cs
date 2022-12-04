@@ -134,6 +134,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                 .Include(c => c.Conta)
                 .Where(c => c.Conta.Usuario.Id == GetUserId())
                 .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
+                .OrderBy(c => c.DataOperacao.Value.Day)
                 .ToListAsync();
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
@@ -147,6 +148,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                 .Where(c => c.Conta.Usuario.Id == GetUserId())
                 .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
                 .Where(c => c.TipoOperacao == type)
+                .OrderBy(c => c.DataOperacao.Value.Day)
                 .ToListAsync();
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
