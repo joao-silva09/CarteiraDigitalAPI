@@ -1,5 +1,6 @@
 ﻿using CarteiraDigitalAPI.Dtos.Divida;
 using CarteiraDigitalAPI.Dtos.Operacao;
+using CarteiraDigitalAPI.Models.Enum;
 using CarteiraDigitalAPI.Services.DividaService;
 using CarteiraDigitalAPI.Services.OperacaoService;
 using Microsoft.AspNetCore.Authorization;
@@ -34,6 +35,15 @@ namespace CarteiraDigitalAPI.Controllers
         public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetByMonth(int month, int year)
         {
             return Ok(await _operacaoService.GetOperacoesByMonth(month, year));
+        }
+        
+        /// <summary>
+        /// Buscar todas as operações de um determinado mês e tipo.
+        /// </summary>
+        [HttpGet("Get/{month}/{year}/{type}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetByMonthAndType(int month, int year, TipoOperacao? type)
+        {
+            return Ok(await _operacaoService.GetOperacoesByMonthAndType(month, year, type));
         }
 
         /// <summary>
