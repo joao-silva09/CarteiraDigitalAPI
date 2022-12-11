@@ -106,10 +106,10 @@ namespace CarteiraDigitalAPI.Controllers
         /// <summary>
         /// Pagar uma dívida.
         /// </summary>
-        [HttpPost("{dividaId}/{contaId}")]
-        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> PagarDivida(int dividaId, int contaId)
+        [HttpPost("Pagar/{dividaId}")]
+        public async Task<ActionResult<ServiceResponse<List<GetDividaDto>>>> PagarDivida(int dividaId, PagarDividaDto pagarDividaDto)
         {
-            var response = await _dividaService.PagarDivida(dividaId, contaId);
+            var response = await _dividaService.PagarDivida(dividaId, pagarDividaDto);
             if (response.Data == null)
             {
                 return NotFound(response);

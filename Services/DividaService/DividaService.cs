@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarteiraDigitalAPI.Data;
 using CarteiraDigitalAPI.Dtos.Divida;
+using CarteiraDigitalAPI.Dtos.Operacao;
 using CarteiraDigitalAPI.Models;
 using CarteiraDigitalAPI.Models.Enum;
 using Microsoft.AspNetCore.Mvc;
@@ -134,15 +135,31 @@ namespace CarteiraDigitalAPI.Services.DividaService
             return response;
         }
 
-        public async Task<ServiceResponse<List<GetDividaDto>>> PagarDivida(int dividaId, int contaId)
+        public async Task<ServiceResponse<List<GetDividaDto>>> PagarDivida(int dividaId, PagarDividaDto pagarDividaDto)
         {
             ServiceResponse<List<GetDividaDto>> response = new ServiceResponse<List<GetDividaDto>>();
             try
             {
                 Divida divida = await _context.Dividas.FirstOrDefaultAsync(c => c.Id == dividaId && c.Usuario.Id == GetUserId());
-                Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == contaId && c.Usuario.Id == GetUserId());
+                Conta conta = await _context.Contas.FirstOrDefaultAsync(c => c.Id == pagarDividaDto.ContaId && c.Usuario.Id == GetUserId());
                 if (divida != null)
                 {
+                    Operacao newOperacao = new Operacao
+                    {
+                        Titulo = divida.Titulo,
+                        Valor = divida.Valor,
+                        DataOperacao = pagarDividaDto.DataPagamento,
+                        Descricao = divida.Descricao,
+                        Conta = conta,
+                    };
+                    if (divida.TipoDivida == TipoDivida.Gasto)
+                    {
+                        newOperacao.TipoOperacao = TipoOperacao.Gasto;
+                    }
+                    else
+                    {
+                        newOperacao.TipoOperacao = TipoOperacao.Recebimento;
+                    }
                     if (divida.TipoDivida == TipoDivida.Gasto)
                     {
                         conta.Saldo -= divida.Valor;
@@ -151,8 +168,10 @@ namespace CarteiraDigitalAPI.Services.DividaService
                     {
                         conta.Saldo += divida.Valor;
                     }
+                    divida.DataPagamento = pagarDividaDto.DataPagamento;
                     divida.SituacaoDivida = SituacaoDivida.Paga;
                     divida.Conta = conta;
+                    _context.Operacoes.Add(newOperacao);
                     await _context.SaveChangesAsync();
                     response.Data = _context.Dividas
                         .Where(c => c.Usuario.Id == GetUserId())
