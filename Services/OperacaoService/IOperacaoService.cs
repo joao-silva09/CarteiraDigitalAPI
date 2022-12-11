@@ -7,7 +7,9 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
     {
         Task<ServiceResponse<List<GetOperacaoDto>>> GetAllOperacoes();
         Task<ServiceResponse<List<GetOperacaoDto>>> GetAllGastos();
+        Task<ServiceResponse<List<GetOperacaoDto>>> GetGastosByMonth(int month, int year);
         Task<ServiceResponse<List<GetOperacaoDto>>> GetAllRecebimentos();
+        Task<ServiceResponse<List<GetOperacaoDto>>> GetRecebimentosByMonth(int month, int year);
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonth(int month, int year);
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonthAndType(int month, int year, TipoOperacao? type);
         Task<ServiceResponse<GetOperacaoDto>> GetOperacaoById(int operacaoId);

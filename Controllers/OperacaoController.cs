@@ -36,6 +36,15 @@ namespace CarteiraDigitalAPI.Controllers
         {
             return Ok(await _operacaoService.GetAllGastos());
         }
+             
+        /// <summary>
+        /// Buscar todos os gastos de um determinado mês.
+        /// </summary>
+        [HttpGet("Get/gastos/{month}/{year}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetGastosByMonth(int month, int year)
+        {
+            return Ok(await _operacaoService.GetGastosByMonth(month, year));
+        }
         
         /// <summary>
         /// Buscar todos os recebimentos.
@@ -45,7 +54,16 @@ namespace CarteiraDigitalAPI.Controllers
         {
             return Ok(await _operacaoService.GetAllRecebimentos());
         }
-        
+
+        /// <summary>
+        /// Buscar todos os recebimentos de um determinado mês.
+        /// </summary>
+        [HttpGet("Get/recebimentos/{month}/{year}")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetRecebimentosByMonth(int month, int year)
+        {
+            return Ok(await _operacaoService.GetRecebimentosByMonth(month, year));
+        }
+
         /// <summary>
         /// Buscar todas as operações de um determinado mês.
         /// </summary>

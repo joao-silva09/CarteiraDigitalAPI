@@ -126,7 +126,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
         }
-        
+
         public async Task<ServiceResponse<List<GetOperacaoDto>>> GetAllGastos()
         {
             var response = new ServiceResponse<List<GetOperacaoDto>>();
@@ -138,7 +138,21 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
         }
-        
+
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> GetGastosByMonth(int month, int year)
+        {
+            var response = new ServiceResponse<List<GetOperacaoDto>>();
+            var dbOperacoes = await _context.Operacoes
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .Where(c => c.TipoOperacao == TipoOperacao.Gasto)
+                .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
+                .OrderBy(c => c.DataOperacao.Value.Day)
+                .ToListAsync();
+            response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
+            return response;
+        }
+
         public async Task<ServiceResponse<List<GetOperacaoDto>>> GetAllRecebimentos()
         {
             var response = new ServiceResponse<List<GetOperacaoDto>>();
@@ -146,6 +160,20 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
                 .Include(c => c.Conta)
                 .Where(c => c.Conta.Usuario.Id == GetUserId())
                 .Where(c => c.TipoOperacao == TipoOperacao.Recebimento)
+                .ToListAsync();
+            response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
+            return response;
+        }
+
+        public async Task<ServiceResponse<List<GetOperacaoDto>>> GetRecebimentosByMonth(int month, int year)
+        {
+            var response = new ServiceResponse<List<GetOperacaoDto>>();
+            var dbOperacoes = await _context.Operacoes
+                .Include(c => c.Conta)
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .Where(c => c.TipoOperacao == TipoOperacao.Recebimento)
+                .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
+                .OrderBy(c => c.DataOperacao.Value.Day)
                 .ToListAsync();
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
@@ -163,7 +191,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
         }
-        
+
         public async Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonthAndType(int month, int year, TipoOperacao? type)
         {
             var response = new ServiceResponse<List<GetOperacaoDto>>();
