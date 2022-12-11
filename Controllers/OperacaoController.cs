@@ -29,6 +29,24 @@ namespace CarteiraDigitalAPI.Controllers
         }
         
         /// <summary>
+        /// Buscar todos os gastos.
+        /// </summary>
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetGastos()
+        {
+            return Ok(await _operacaoService.GetAllGastos());
+        }
+        
+        /// <summary>
+        /// Buscar todos os recebimentos.
+        /// </summary>
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<ServiceResponse<List<GetOperacaoDto>>>> GetRecebimentos()
+        {
+            return Ok(await _operacaoService.GetAllRecebimentos());
+        }
+        
+        /// <summary>
         /// Buscar todas as operações de um determinado mês.
         /// </summary>
         [HttpGet("Get/{month}/{year}")]

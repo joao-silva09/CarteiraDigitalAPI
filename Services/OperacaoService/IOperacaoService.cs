@@ -6,6 +6,8 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
     public interface IOperacaoService
     {
         Task<ServiceResponse<List<GetOperacaoDto>>> GetAllOperacoes();
+        Task<ServiceResponse<List<GetOperacaoDto>>> GetAllGastos();
+        Task<ServiceResponse<List<GetOperacaoDto>>> GetAllRecebimentos();
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonth(int month, int year);
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonthAndType(int month, int year, TipoOperacao? type);
         Task<ServiceResponse<GetOperacaoDto>> GetOperacaoById(int operacaoId);
