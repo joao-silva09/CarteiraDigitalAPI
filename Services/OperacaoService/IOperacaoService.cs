@@ -13,6 +13,7 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonth(int month, int year);
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByMonthAndType(int month, int year, TipoOperacao? type);
         Task<ServiceResponse<GetOperacaoDto>> GetOperacaoById(int operacaoId);
+        Task<ServiceResponse<GetDadosDto>> GetNumeroDeOperacoes(int month, int year);
         Task<ServiceResponse<List<GetOperacaoDto>>> GetOperacoesByConta(int contaId);
         Task<ServiceResponse<List<GetOperacaoDto>>> AddReceita(AddOperacaoDto newOperacao, int contaId);
         Task<ServiceResponse<List<GetOperacaoDto>>> AddGasto(AddOperacaoDto newOperacao, int contaId);

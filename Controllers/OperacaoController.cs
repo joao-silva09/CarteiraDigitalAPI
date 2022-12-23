@@ -83,6 +83,15 @@ namespace CarteiraDigitalAPI.Controllers
         }
 
         /// <summary>
+        /// Buscar contagem de operações.
+        /// </summary>
+        [HttpGet("Get/dados/{month}/{year}")]
+        public async Task<ActionResult<ServiceResponse<GetDadosDto>>> GetContagem(int month, int year)
+        {
+            return Ok(await _operacaoService.GetNumeroDeOperacoes(month, year));
+        }
+        
+        /// <summary>
         /// Buscar todas as operações de uma conta.
         /// </summary>
         [HttpGet("conta/{contaId}")]

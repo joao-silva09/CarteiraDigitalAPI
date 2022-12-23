@@ -216,6 +216,28 @@ namespace CarteiraDigitalAPI.Services.OperacaoService
             response.Data = dbOperacoes.Select(c => _mapper.Map<GetOperacaoDto>(c)).ToList();
             return response;
         }
+        
+        public async Task<ServiceResponse<GetDadosDto>> GetNumeroDeOperacoes(int month, int year)
+        {
+            var response = new ServiceResponse<GetDadosDto>();
+            var dbOperacoesEntradas = await _context.Operacoes
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
+                .Where(c => c.TipoOperacao == TipoOperacao.Recebimento)
+                .ToListAsync();
+            var dbOperacoesSaidas = await _context.Operacoes
+                .Where(c => c.Conta.Usuario.Id == GetUserId())
+                .Where(c => c.DataOperacao.Value.Month == month && c.DataOperacao.Value.Year == year)
+                .Where(c => c.TipoOperacao == TipoOperacao.Gasto)
+                .ToListAsync();
+
+            response.Data = new GetDadosDto
+            {
+                Entradas = dbOperacoesEntradas.Count,
+                Saidas = dbOperacoesSaidas.Count
+            };
+            return response;
+        }
 
         public async Task<ServiceResponse<GetOperacaoDto>> GetOperacaoById(int operacaoId)
         {
